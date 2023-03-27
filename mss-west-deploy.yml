@@ -2,49 +2,58 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mss-prod-pod
-  namespace: mss-prod 
+  namespace: mss-prod
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: java-app
+      app: java-web
   strategy:
-    type: RollingUpdate
     rollingUpdate:
-      maxSurge: 1
+      maxSurge: 2
       maxUnavailable: 1
-  minReadySeconds: 60
+    type: RollingUpdate
   template:
     metadata:
-      name: java-app
+      name: java-web
       labels:
-        app: java-app
+        app: java-web
     spec:
-      serviceAccountName: default
-      volumes:
-      - name: vol
-        emptyDir: {}
+      # imagePullSecrets:
+      #   - name: regcred
+      affinity:
+        nodeAffinity:
+          ##kubectl label node mss-node02 mss-node02=ssd
+          # requiredDuringSchedulingIgnoredDuringExecution:
+          #   nodeSelectorTerms:
+          #   - matchExpressions:
+          #     - key: mss-node02
+          #       operator: In
+          #       values:
+          #       - ssd
       containers:
       - name: mss-prod-con
         image: replace
         ports:
         - containerPort: 8080
-        volumeMounts:
-          - mountPath: /tmp
-            name: vol
-        securityContext:
-          capabilities:
-            drop:
-             - NET_RAW
-          runAsUser: 100
-          runAsNonRoot: true
-          readOnlyRootFilesystem: true
-          allowPrivilegeEscalation: false
         resources:
-         requests:
-          memory: "256Mi"
-          cpu: "200m"
-         limits:
-          memory: "512Mi"
-          cpu: "500m"
-
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+             cpu: 100m
+             memory: 512Mi
+        readinessProbe:
+          httpGet:
+            path: /healthz-app
+            port: 8080
+          initialDelaySeconds: 200
+          timeoutSeconds: 15
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /healthz-app
+            port: 8080
+          initialDelaySeconds: 200
+          timeoutSeconds: 15
+          periodSeconds: 15
