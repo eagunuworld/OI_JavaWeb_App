@@ -32,7 +32,7 @@ pipeline {
             conName = "mss-prod-con"
             svcName = "mss-prod-svc"
             svcPort = "30004"
-            jenkinsURL = "http://34.125.74.111"
+            jenkinsURL = "http://34.174.110.253"
             mssNode = "http://34.174.110.253"
           }
 
