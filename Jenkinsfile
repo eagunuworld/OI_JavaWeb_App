@@ -157,7 +157,7 @@ pipeline {
       steps {
         parallel(
           "Deployment": {
-              sh "sed -i 's#replace#${REGISTRY}:${VERSION}#g' mss-north-west-deploy.yml"
+              sh "sed -i 's#replace#${REGISTRY}:${VERSION}#g' mss-west-deploy.yml"
               sh "kubectl apply -f mss-west-deploy.yml"
             },
           "create-svcs": {
