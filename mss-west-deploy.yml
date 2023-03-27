@@ -21,8 +21,8 @@ spec:
     spec:
       # imagePullSecrets:
       #   - name: regcred
-      affinity:
-        nodeAffinity:
+      # affinity:
+      #   nodeAffinity:
           ##kubectl label node mss-node02 mss-node02=ssd
           # requiredDuringSchedulingIgnoredDuringExecution:
           #   nodeSelectorTerms:
