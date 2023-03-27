@@ -7,7 +7,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: java-web
+      app: java-app
   strategy:
     rollingUpdate:
       maxSurge: 2
@@ -15,9 +15,9 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      name: java-web
+      name: java-app
       labels:
-        app: java-web
+        app: java-app
     spec:
       # imagePullSecrets:
       #   - name: regcred
