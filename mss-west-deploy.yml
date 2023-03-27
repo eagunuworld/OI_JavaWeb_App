@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mss-prod-pod
+  namespace: mss-prod 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: java-app
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 60
+  template:
+    metadata:
+      name: java-app
+      labels:
+        app: java-app
+    spec:
+      serviceAccountName: default
+      volumes:
+      - name: vol
+        emptyDir: {}
+      containers:
+      - name: mss-prod-con
+        image: replace
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+          - mountPath: /tmp
+            name: vol
+        securityContext:
+          capabilities:
+            drop:
+             - NET_RAW
+          runAsUser: 100
+          runAsNonRoot: true
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+        resources:
+         requests:
+          memory: "256Mi"
+          cpu: "200m"
+         limits:
+          memory: "512Mi"
+          cpu: "500m"
+
